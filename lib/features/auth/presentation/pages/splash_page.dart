@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pulse/features/auth/presentation/pages/login_page.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
@@ -11,14 +12,18 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateMixin {
+class _SplashPageState extends State<SplashPage>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 2));
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    );
     _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
     _controller.forward();
 
@@ -43,13 +48,15 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
         if (state is AuthAuthenticated) {
           // Go to Home (we'll implement later)
           // Navigator.pushReplacementNamed(context, '/home');
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logged in! Go to Home')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Logged in! Go to Home')),
+          );
         } else if (state is AuthUnauthenticated) {
           // Check if first time to show Onboarding, or straight to Login
           // For now, go to Login
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (_) => const Scaffold(body: Center(child: Text('Login Screen Todo')))),
+            MaterialPageRoute(builder: (_) => LoginPage()),
           );
         }
       },
@@ -62,7 +69,12 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
               scale: _animation,
               child: const Text(
                 'PULSE',
-                style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 4),
+                style: TextStyle(
+                  fontSize: 48,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  letterSpacing: 4,
+                ),
               ),
             ),
           ),
