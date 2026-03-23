@@ -1,7 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../network/network_info.dart';
@@ -83,7 +83,7 @@ Future<void> init() async {
     ),
   );
   sl.registerLazySingleton<NewsRemoteDataSource>(
-    () => NewsRemoteDataSourceImpl(client: sl()),
+    () => NewsRemoteDataSourceImpl(dio: sl()),
   );
   sl.registerLazySingleton<NewsLocalDataSource>(
     () => NewsLocalDataSourceImpl(sharedPreferences: sl()),
@@ -104,7 +104,7 @@ Future<void> init() async {
     ),
   );
   sl.registerLazySingleton<CryptoRemoteDataSource>(
-    () => CryptoRemoteDataSourceImpl(client: sl()),
+    () => CryptoRemoteDataSourceImpl(dio: sl()),
   );
   sl.registerLazySingleton<CryptoLocalDataSource>(
     () => CryptoLocalDataSourceImpl(sharedPreferences: sl()),
@@ -116,7 +116,7 @@ Future<void> init() async {
   //! External
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton(() => sharedPreferences);
-  sl.registerLazySingleton(() => http.Client());
+  sl.registerLazySingleton(() => Dio());
   sl.registerLazySingleton(() => InternetConnectionChecker.createInstance());
   sl.registerLazySingleton(() => FirebaseAuth.instance);
   sl.registerLazySingleton(() => GoogleSignIn());

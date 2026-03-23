@@ -48,7 +48,6 @@ dependencies:
   equatable: ^2.0.8
   get_it: ^9.2.1
   dartz: ^0.10.1
-  http: ^1.6.0
   internet_connection_checker: ^3.0.1
   lottie: ^3.3.2
   firebase_remote_config: ^6.2.0

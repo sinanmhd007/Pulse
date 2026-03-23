@@ -1,5 +1,4 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import '../../../../core/error/exceptions.dart';
 import '../models/news_model.dart';
 
@@ -9,38 +8,34 @@ abstract class NewsRemoteDataSource {
 }
 
 class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
-  final http.Client client;
+  final Dio dio;
   // TODO: Add your NewsAPI Key here
   final String apiKey = 'YOUR_API_KEY_HERE'; 
 
-  NewsRemoteDataSourceImpl({required this.client});
+  NewsRemoteDataSourceImpl({required this.dio});
 
   @override
   Future<List<NewsModel>> getLiveNews() async {
-    final response = await client.get(
-      Uri.parse('https://newsapi.org/v2/top-headlines?country=us&apiKey=$apiKey'),
-    );
-
-    if (response.statusCode == 200) {
-      final jsonResponse = json.decode(response.body);
-      final List<dynamic> articlesJson = jsonResponse['articles'];
+    try {
+      final response = await dio.get(
+        'https://newsapi.org/v2/top-headlines?country=us&apiKey=$apiKey',
+      );
+      final List<dynamic> articlesJson = response.data['articles'];
       return articlesJson.map((json) => NewsModel.fromJson(json)).toList();
-    } else {
+    } catch (e) {
       throw ServerException();
     }
   }
 
   @override
   Future<List<NewsModel>> searchNews(String query) async {
-    final response = await client.get(
-      Uri.parse('https://newsapi.org/v2/everything?q=$query&apiKey=$apiKey'),
-    );
-
-    if (response.statusCode == 200) {
-      final jsonResponse = json.decode(response.body);
-      final List<dynamic> articlesJson = jsonResponse['articles'];
+    try {
+      final response = await dio.get(
+        'https://newsapi.org/v2/everything?q=$query&apiKey=$apiKey',
+      );
+      final List<dynamic> articlesJson = response.data['articles'];
       return articlesJson.map((json) => NewsModel.fromJson(json)).toList();
-    } else {
+    } catch (e) {
       throw ServerException();
     }
   }
