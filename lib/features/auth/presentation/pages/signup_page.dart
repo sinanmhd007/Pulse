@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:pulse/features/home/presentation/pages/home_page.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
@@ -27,10 +28,12 @@ class _SignupPageState extends State<SignupPage> {
 
   void _signup() {
     if (_formKey.currentState!.validate()) {
-      context.read<AuthBloc>().add(AuthSignUpRequested(
-            _emailController.text.trim(),
-            _passwordController.text.trim(),
-          ));
+      context.read<AuthBloc>().add(
+        AuthSignUpRequested(
+          _emailController.text.trim(),
+          _passwordController.text.trim(),
+        ),
+      );
     }
   }
 
@@ -44,11 +47,19 @@ class _SignupPageState extends State<SignupPage> {
             child: BlocConsumer<AuthBloc, AuthState>(
               listener: (context, state) {
                 if (state is AuthAuthenticated) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Account created!')));
-                  // Navigator.pushReplacementNamed(context, '/home');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Account created!')),
+                  );
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => HomePage()),
+                  );
                 } else if (state is AuthError) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(state.message), backgroundColor: Theme.of(context).colorScheme.error),
+                    SnackBar(
+                      content: Text(state.message),
+                      backgroundColor: Theme.of(context).colorScheme.error,
+                    ),
                   );
                 }
               },
@@ -80,7 +91,8 @@ class _SignupPageState extends State<SignupPage> {
                           prefixIcon: Icon(Icons.email),
                         ),
                         validator: (value) {
-                          if (value == null || !value.contains('@')) return 'Enter a valid email';
+                          if (value == null || !value.contains('@'))
+                            return 'Enter a valid email';
                           return null;
                         },
                       ),
@@ -94,19 +106,26 @@ class _SignupPageState extends State<SignupPage> {
                           prefixIcon: Icon(Icons.lock),
                         ),
                         validator: (value) {
-                          if (value == null || value.length < 6) return 'Password must be at least 6 characters';
+                          if (value == null || value.length < 6)
+                            return 'Password must be at least 6 characters';
                           return null;
                         },
                       ),
                       const SizedBox(height: 24),
                       if (state is AuthLoading)
                         const Center(
-                          child: SpinKitPulse(color: Colors.pinkAccent, size: 50.0),
+                          child: SpinKitPulse(
+                            color: Colors.pinkAccent,
+                            size: 50.0,
+                          ),
                         )
                       else
                         ElevatedButton(
                           onPressed: _signup,
-                          child: const Text('Sign Up', style: TextStyle(fontSize: 16)),
+                          child: const Text(
+                            'Sign Up',
+                            style: TextStyle(fontSize: 16),
+                          ),
                         ),
                       const SizedBox(height: 24),
                       Row(
@@ -117,7 +136,9 @@ class _SignupPageState extends State<SignupPage> {
                             onPressed: () {
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (_) => const LoginPage()),
+                                MaterialPageRoute(
+                                  builder: (_) => const LoginPage(),
+                                ),
                               );
                             },
                             child: const Text('Login'),

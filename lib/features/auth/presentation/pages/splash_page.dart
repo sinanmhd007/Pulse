@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pulse/features/auth/presentation/pages/login_page.dart';
+import 'package:pulse/features/home/presentation/pages/home_page.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
@@ -47,7 +48,10 @@ class _SplashPageState extends State<SplashPage>
       listener: (context, state) {
         if (state is AuthAuthenticated) {
           // Go to Home (we'll implement later)
-          // Navigator.pushReplacementNamed(context, '/home');
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => HomePage()),
+          );
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Logged in! Go to Home')),
           );

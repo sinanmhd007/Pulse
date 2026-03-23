@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:pulse/features/home/presentation/pages/home_page.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
@@ -27,10 +28,12 @@ class _LoginPageState extends State<LoginPage> {
 
   void _login() {
     if (_formKey.currentState!.validate()) {
-      context.read<AuthBloc>().add(AuthSignInRequested(
-            _emailController.text.trim(),
-            _passwordController.text.trim(),
-          ));
+      context.read<AuthBloc>().add(
+        AuthSignInRequested(
+          _emailController.text.trim(),
+          _passwordController.text.trim(),
+        ),
+      );
     }
   }
 
@@ -49,11 +52,19 @@ class _LoginPageState extends State<LoginPage> {
               listener: (context, state) {
                 if (state is AuthAuthenticated) {
                   // Navigate to Home
-                  // Navigator.pushReplacementNamed(context, '/home');
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Login Success!')));
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => HomePage()),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Login Success!')),
+                  );
                 } else if (state is AuthError) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(state.message), backgroundColor: Theme.of(context).colorScheme.error),
+                    SnackBar(
+                      content: Text(state.message),
+                      backgroundColor: Theme.of(context).colorScheme.error,
+                    ),
                   );
                 }
               },
@@ -85,7 +96,8 @@ class _LoginPageState extends State<LoginPage> {
                           prefixIcon: Icon(Icons.email),
                         ),
                         validator: (value) {
-                          if (value == null || !value.contains('@')) return 'Enter a valid email';
+                          if (value == null || !value.contains('@'))
+                            return 'Enter a valid email';
                           return null;
                         },
                       ),
@@ -99,7 +111,8 @@ class _LoginPageState extends State<LoginPage> {
                           prefixIcon: Icon(Icons.lock),
                         ),
                         validator: (value) {
-                          if (value == null || value.length < 6) return 'Password must be at least 6 characters';
+                          if (value == null || value.length < 6)
+                            return 'Password must be at least 6 characters';
                           return null;
                         },
                       ),
@@ -111,7 +124,10 @@ class _LoginPageState extends State<LoginPage> {
                       else ...[
                         ElevatedButton(
                           onPressed: _login,
-                          child: const Text('Login', style: TextStyle(fontSize: 16)),
+                          child: const Text(
+                            'Login',
+                            style: TextStyle(fontSize: 16),
+                          ),
                         ),
                         const SizedBox(height: 16),
                         OutlinedButton.icon(
@@ -120,8 +136,12 @@ class _LoginPageState extends State<LoginPage> {
                           label: const Text('Sign in with Google'),
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 14),
-                            side: BorderSide(color: Theme.of(context).primaryColor),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            side: BorderSide(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
                         ),
                       ],
@@ -134,7 +154,9 @@ class _LoginPageState extends State<LoginPage> {
                             onPressed: () {
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (_) => const SignupPage()),
+                                MaterialPageRoute(
+                                  builder: (_) => const SignupPage(),
+                                ),
                               );
                             },
                             child: const Text('Sign Up'),
