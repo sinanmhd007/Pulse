@@ -19,7 +19,7 @@ Pulse is a premium Flutter application demonstrating the integration of real-tim
 - **GetIt** (Dependency Injection)
 - **Firebase** (Auth)
 - **dartz** (Functional Error Handling)
-- **http** & **internet_connection_checker**
+- **dio** & **internet_connection_checker**
 - **shared_preferences** (Local Storage)
 - **cached_network_image**
 
