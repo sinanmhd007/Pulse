@@ -1,16 +1,59 @@
-# pulse
+# Pulse 📈
 
-A new Flutter project.
+Pulse is a premium Flutter application demonstrating the integration of real-time Data streams (News + Cryptocurrency) with a Robust Clean Architecture setup.
 
-## Getting Started
+## Features ✨
+- **Firebase Authentication**: Email/Password and Google Sign-In.
+- **News Tracker**: Pulls live top headlines caching for offline functionality.
+- **Crypto Tracker**: Live tracking of top 100 cryptocurrencies by market cap using CoinGecko.
+- **Clean Architecture & BLoC**: Industry standard scalable structure.
+- **Beautiful UI**: Modern aesthetics featuring `flutter_spinkit` and responsive designs.
+- **Offline Support**: Gracefully handles network loss and enables local data caching.
 
-This project is a starting point for a Flutter application.
+## Screenshots 📷
+*Add screenshots here*
 
-A few resources to get you started if this is your first Flutter project:
+## Tech Stack 🛠
+- **Flutter** & **Dart**
+- **BLoC** (State Management)
+- **GetIt** (Dependency Injection)
+- **Firebase** (Auth)
+- **dartz** (Functional Error Handling)
+- **http** & **internet_connection_checker**
+- **shared_preferences** (Local Storage)
+- **cached_network_image**
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Architecture Diagram 🏗
+```text
+lib/
+ ┣ core/              # Shared utilities, errors, network info, theme, DI
+ ┣ features/          # Application features
+ ┃ ┣ auth/            # Authentication feature
+ ┃ ┃ ┣ data/          # Data sources & repositories implementation
+ ┃ ┃ ┣ domain/        # Entities, UseCases, Repositories interface
+ ┃ ┃ ┗ presentation/  # UI, BLoC, Events, States
+ ┃ ┣ news/            # News feature
+ ┃ ┗ crypto/          # Crypto feature
+ ┗ main.dart          # Entry point
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Getting Started 🚀
+1. Clone the repository.
+   ```bash
+   git clone <repo_url>
+   ```
+2. Install dependencies.
+   ```bash
+   flutter pub get
+   ```
+3. Configure **Firebase**. Ensure `firebase_options.dart` is added via the FlutterFire CLI.
+   ```bash
+   flutterfire configure
+   ```
+4. Run the app.
+   ```bash
+   flutter run
+   ```
+
+## Development
+Pulse uses the `dev` branch for active feature development and `main` for stable releases.
