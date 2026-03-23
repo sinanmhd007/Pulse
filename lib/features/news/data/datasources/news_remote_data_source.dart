@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../../../core/error/exceptions.dart';
 import '../models/news_model.dart';
 
@@ -9,8 +10,7 @@ abstract class NewsRemoteDataSource {
 
 class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
   final Dio dio;
-  // TODO: Add your NewsAPI Key here
-  final String apiKey = 'YOUR_API_KEY_HERE'; 
+  final String apiKey = dotenv.env['NEWS_API_KEY']!;
 
   NewsRemoteDataSourceImpl({required this.dio});
 

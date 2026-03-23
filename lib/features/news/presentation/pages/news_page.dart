@@ -19,7 +19,6 @@ class NewsPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
-              // TODO: Implement search
             },
           )
         ],
@@ -71,7 +70,7 @@ class NewsPage extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
         onTap: () {
-          // TODO: Open detail parsing webview via url launcher
+         
         },
         borderRadius: BorderRadius.circular(16),
         child: Column(
