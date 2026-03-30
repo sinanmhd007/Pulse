@@ -1,8 +1,8 @@
-# Pulse 📈
+# Pulse 
 
 Pulse is a premium Flutter application demonstrating the integration of real-time Data streams (News + Cryptocurrency) with a Robust Clean Architecture setup.
 
-## Features ✨
+## Features 
 - **Firebase Authentication**: Email/Password and Google Sign-In.
 - **News Tracker**: Pulls live top headlines caching for offline functionality.
 - **Crypto Tracker**: Live tracking of top 100 cryptocurrencies by market cap using CoinGecko.
@@ -10,10 +10,10 @@ Pulse is a premium Flutter application demonstrating the integration of real-tim
 - **Beautiful UI**: Modern aesthetics featuring `flutter_spinkit` and responsive designs.
 - **Offline Support**: Gracefully handles network loss and enables local data caching.
 
-## Screenshots 📷
+## Screenshots 
 *Add screenshots here*
 
-## Tech Stack 🛠
+## Tech Stack 
 - **Flutter** & **Dart**
 - **BLoC** (State Management)
 - **GetIt** (Dependency Injection)
@@ -23,7 +23,7 @@ Pulse is a premium Flutter application demonstrating the integration of real-tim
 - **shared_preferences** (Local Storage)
 - **cached_network_image**
 
-## Architecture Diagram 🏗
+## Architecture Diagram 
 ```text
 lib/
  ┣ core/              # Shared utilities, errors, network info, theme, DI
@@ -37,7 +37,7 @@ lib/
  ┗ main.dart          # Entry point
 ```
 
-## Getting Started 🚀
+## Getting Started 
 1. Clone the repository.
    ```bash
    git clone https://github.com/sinanmhd007/Pulse.git
