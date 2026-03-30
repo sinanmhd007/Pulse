@@ -40,7 +40,7 @@ lib/
 ## Getting Started 🚀
 1. Clone the repository.
    ```bash
-   git clone <repo_url>
+   git clone https://github.com/sinanmhd007/Pulse.git
    ```
 2. Install dependencies.
    ```bash
