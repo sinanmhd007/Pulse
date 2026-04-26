@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:intl/intl.dart';
+
+import 'package:pulse/features/crypto/presentation/widgets/crypto_card.dart';
+import 'package:pulse/features/crypto/presentation/widgets/top_mover_card.dart';
 import '../bloc/crypto_bloc.dart';
 import '../bloc/crypto_event.dart';
 import '../bloc/crypto_state.dart';
@@ -39,17 +40,23 @@ class _CryptoPageState extends State<CryptoPage> {
       body: BlocBuilder<CryptoBloc, CryptoState>(
         builder: (context, state) {
           if (state is CryptoLoading) {
-            return const Center(child: SpinKitPulse(color: Colors.greenAccent, size: 60));
+            return const Center(
+              child: SpinKitPulse(color: Colors.greenAccent, size: 60),
+            );
           } else if (state is CryptoLoaded) {
             final List<CryptoCoin> allCoins = state.coins;
             // Let's create a 'Top Movers' simple logic if not searching
             final isSearching = _searchController.text.isNotEmpty;
             List<CryptoCoin> topMovers = [];
-            
+
             if (!isSearching && allCoins.length >= 3) {
-               topMovers = List.from(allCoins)
-                ..sort((a, b) => b.priceChangePercentage24h.abs().compareTo(a.priceChangePercentage24h.abs()));
-               topMovers = topMovers.take(5).toList();
+              topMovers = List.from(allCoins)
+                ..sort(
+                  (a, b) => b.priceChangePercentage24h.abs().compareTo(
+                    a.priceChangePercentage24h.abs(),
+                  ),
+                );
+              topMovers = topMovers.take(5).toList();
             }
 
             return RefreshIndicator(
@@ -66,7 +73,10 @@ class _CryptoPageState extends State<CryptoPage> {
                     elevation: 0,
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     flexibleSpace: FlexibleSpaceBar(
-                      titlePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                      titlePadding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 16,
+                      ),
                       title: Text(
                         'Market',
                         style: TextStyle(
@@ -80,7 +90,10 @@ class _CryptoPageState extends State<CryptoPage> {
                   ),
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0,
+                        vertical: 10,
+                      ),
                       child: Container(
                         decoration: BoxDecoration(
                           color: Theme.of(context).cardColor,
@@ -90,7 +103,7 @@ class _CryptoPageState extends State<CryptoPage> {
                               color: Colors.black.withValues(alpha: 0.05),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
-                            )
+                            ),
                           ],
                         ),
                         child: TextField(
@@ -99,17 +112,27 @@ class _CryptoPageState extends State<CryptoPage> {
                           decoration: InputDecoration(
                             hintText: 'Search coins...',
                             hintStyle: const TextStyle(color: Colors.grey),
-                            prefixIcon: const Icon(Icons.search, color: Colors.green),
-                            suffixIcon: isSearching ? IconButton(
-                              icon: const Icon(Icons.clear, color: Colors.grey),
-                              onPressed: () {
-                                _searchController.clear();
-                                _onSearchChanged('');
-                                FocusScope.of(context).unfocus();
-                              },
-                            ) : null,
+                            prefixIcon: const Icon(
+                              Icons.search,
+                              color: Colors.green,
+                            ),
+                            suffixIcon: isSearching
+                                ? IconButton(
+                                    icon: const Icon(
+                                      Icons.clear,
+                                      color: Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      _searchController.clear();
+                                      _onSearchChanged('');
+                                      FocusScope.of(context).unfocus();
+                                    },
+                                  )
+                                : null,
                             border: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 16,
+                            ),
                           ),
                         ),
                       ),
@@ -132,7 +155,10 @@ class _CryptoPageState extends State<CryptoPage> {
                             const SizedBox(width: 8),
                             const Text(
                               'Top Movers',
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
@@ -146,7 +172,7 @@ class _CryptoPageState extends State<CryptoPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           itemCount: topMovers.length,
                           itemBuilder: (context, index) {
-                            return _buildTopMoverCard(context, topMovers[index]);
+                            return TopMoverCard(coin: allCoins[index]);
                           },
                         ),
                       ),
@@ -168,32 +194,47 @@ class _CryptoPageState extends State<CryptoPage> {
                           const SizedBox(width: 8),
                           Text(
                             isSearching ? 'Search Results' : 'Top Assets',
-                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
                     ),
                   ),
-                  allCoins.isEmpty 
-                  ? SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.all(40.0),
-                        child: Center(
-                          child: Text('No coins found for "${_searchController.text}"', style: const TextStyle(color: Colors.grey, fontSize: 16)),
+                  allCoins.isEmpty
+                      ? SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.all(40.0),
+                            child: Center(
+                              child: Text(
+                                'No coins found for "${_searchController.text}"',
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      : SliverList(
+                          delegate: SliverChildBuilderDelegate((
+                            context,
+                            index,
+                          ) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0,
+                                vertical: 6.0,
+                              ),
+                              child: CryptoCard(
+                                coin: allCoins[index],
+                                rank: index + 1,
+                              ),
+                            );
+                          }, childCount: allCoins.length),
                         ),
-                      ),
-                    )
-                  : SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
-                          child: _buildCryptoCard(context, allCoins[index], index + 1),
-                        );
-                      },
-                      childCount: allCoins.length,
-                    ),
-                  ),
                   const SliverToBoxAdapter(child: SizedBox(height: 30)),
                 ],
               ),
@@ -203,11 +244,19 @@ class _CryptoPageState extends State<CryptoPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.wifi_off_rounded, size: 80, color: Colors.grey),
+                  const Icon(
+                    Icons.wifi_off_rounded,
+                    size: 80,
+                    color: Colors.grey,
+                  ),
                   const SizedBox(height: 20),
                   Text(
                     'Unable to retrieve markets',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.grey[700]),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey[700],
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Text(
@@ -217,15 +266,24 @@ class _CryptoPageState extends State<CryptoPage> {
                   ),
                   const SizedBox(height: 30),
                   ElevatedButton.icon(
-                    onPressed: () => context.read<CryptoBloc>().add(FetchLiveCrypto()),
+                    onPressed: () =>
+                        context.read<CryptoBloc>().add(FetchLiveCrypto()),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.greenAccent.shade700,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
                     ),
                     icon: const Icon(Icons.refresh),
-                    label: const Text('Try Again', style: TextStyle(fontSize: 16)),
+                    label: const Text(
+                      'Try Again',
+                      style: TextStyle(fontSize: 16),
+                    ),
                   ),
                 ],
               ),
@@ -233,167 +291,6 @@ class _CryptoPageState extends State<CryptoPage> {
           }
           return const SizedBox.shrink();
         },
-      ),
-    );
-  }
-
-  Widget _buildTopMoverCard(BuildContext context, CryptoCoin coin) {
-    final currencyFormatter = NumberFormat.currency(symbol: '\$', decimalDigits: 2);
-    final isNegative = coin.priceChangePercentage24h < 0;
-
-    return Container(
-      width: 140,
-      margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isNegative ? Colors.redAccent.withValues(alpha: 0.1) : Colors.greenAccent.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: isNegative ? Colors.redAccent.withValues(alpha: 0.3) : Colors.greenAccent.withValues(alpha: 0.3),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CachedNetworkImage(
-                imageUrl: coin.imageUrl,
-                width: 36,
-                height: 36,
-                placeholder: (context, url) => const SpinKitDoubleBounce(color: Colors.grey, size: 20),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  coin.symbol,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                ),
-              ),
-            ],
-          ),
-          const Spacer(),
-          Text(
-            currencyFormatter.format(coin.currentPrice),
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 4),
-          Row(
-            children: [
-              Icon(
-                isNegative ? Icons.trending_down : Icons.trending_up,
-                color: isNegative ? Colors.redAccent : Colors.green,
-                size: 16,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                '${coin.priceChangePercentage24h.abs().toStringAsFixed(2)}%',
-                style: TextStyle(
-                  color: isNegative ? Colors.redAccent : Colors.green,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 14,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCryptoCard(BuildContext context, CryptoCoin coin, int rank) {
-    final currencyFormatter = NumberFormat.currency(symbol: '\$', decimalDigits: 2);
-    final isNegative = coin.priceChangePercentage24h < 0;
-    
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          )
-        ],
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          Text(
-            rank.toString(),
-            style: TextStyle(color: Colors.grey[400], fontWeight: FontWeight.w600, fontSize: 14),
-          ),
-          const SizedBox(width: 12),
-          CachedNetworkImage(
-            imageUrl: coin.imageUrl,
-            width: 44,
-            height: 44,
-            placeholder: (context, url) => const SpinKitDoubleBounce(color: Colors.grey, size: 20),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  coin.name,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  coin.symbol.toUpperCase(),
-                  style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w600, fontSize: 13),
-                ),
-              ],
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                currencyFormatter.format(coin.currentPrice),
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              const SizedBox(height: 4),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: isNegative ? Colors.redAccent.withValues(alpha: 0.1) : Colors.greenAccent.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      isNegative ? Icons.arrow_drop_down : Icons.arrow_drop_up,
-                      color: isNegative ? Colors.redAccent : Colors.green,
-                      size: 16,
-                    ),
-                    Text(
-                      '${coin.priceChangePercentage24h.abs().toStringAsFixed(2)}%',
-                      style: TextStyle(
-                        color: isNegative ? Colors.redAccent : Colors.green,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }

@@ -3,7 +3,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:pulse/features/news/domain/entities/news_article.dart';
 import 'package:pulse/features/news/presentation/widgets/news_slidable_item.dart';
 
-
 class NewsPageContent extends StatelessWidget {
   final bool isSearching;
   final bool isCurrentlySearching;
@@ -72,7 +71,7 @@ class NewsPageContent extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha:0.05),
+                              color: Colors.black.withValues(alpha: 0.05),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -105,9 +104,14 @@ class NewsPageContent extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(right: 16.0),
                     child: CircleAvatar(
-                      backgroundColor: Colors.grey.withValues(alpha:0.1),
+                      backgroundColor: const Color.fromARGB(
+                        0,
+                        0,
+                        0,
+                        0,
+                      ).withValues(alpha: 1),
                       child: IconButton(
-                        icon: const Icon(Icons.search),
+                        icon: const Icon(Icons.search, color: Colors.white),
                         onPressed: toggleSearch,
                       ),
                     ),
@@ -116,7 +120,6 @@ class NewsPageContent extends StatelessWidget {
               : [],
         ),
 
-        
         if (articles.isEmpty)
           SliverToBoxAdapter(
             child: Padding(
@@ -152,10 +155,7 @@ class NewsPageContent extends StatelessWidget {
               ),
               itemBuilder: (context, index, realIdx) {
                 final article = breakingNews[index];
-                return NewsSlidableItem(
-                  article: article,
-                  onTap: launchUrl,
-                );
+                return NewsSlidableItem(article: article, onTap: launchUrl);
               },
             ),
           ),
@@ -167,9 +167,7 @@ class NewsPageContent extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),
               child: Text(
-                isCurrentlySearching
-                    ? 'Search Results'
-                    : 'Today\'s News',
+                isCurrentlySearching ? 'Search Results' : 'Today\'s News',
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -182,8 +180,7 @@ class NewsPageContent extends StatelessWidget {
         SliverList(
           delegate: SliverChildBuilderDelegate(
             (context, index) {
-              final listToUse =
-                  isCurrentlySearching ? articles : todaysNews;
+              final listToUse = isCurrentlySearching ? articles : todaysNews;
 
               if (index >= listToUse.length) {
                 return const SizedBox.shrink();
@@ -194,10 +191,7 @@ class NewsPageContent extends StatelessWidget {
                   horizontal: 16,
                   vertical: 8,
                 ),
-                child: buildSlidableNewsCard(
-                  context,
-                  listToUse[index],
-                ),
+                child: buildSlidableNewsCard(context, listToUse[index]),
               );
             },
             childCount: isCurrentlySearching
