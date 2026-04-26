@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import 'package:pulse/features/crypto/presentation/widgets/crypto_card.dart';
 import 'package:pulse/features/crypto/presentation/widgets/market_screen.dart';
-import 'package:pulse/features/crypto/presentation/widgets/top_mover_card.dart';
 import '../bloc/crypto_bloc.dart';
 import '../bloc/crypto_event.dart';
 import '../bloc/crypto_state.dart';
