@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:pulse/features/home/presentation/pages/home_page.dart';
+import 'package:pulse/features/bottom_navigation/navigation_controller.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
@@ -54,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
                   // Navigate to Home
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (_) => HomePage()),
+                    MaterialPageRoute(builder: (_) => NavigationController()),
                   );
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Login Success!')),
@@ -96,8 +96,15 @@ class _LoginPageState extends State<LoginPage> {
                           prefixIcon: Icon(Icons.email),
                         ),
                         validator: (value) {
-                          if (value == null || !value.contains('@'))
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Email is required';
+                          }
+                          final emailRegex = RegExp(
+                            r'^[\w.-]+@[\w.-]+\.\w{2,}$',
+                          );
+                          if (!emailRegex.hasMatch(value.trim())) {
                             return 'Enter a valid email';
+                          }
                           return null;
                         },
                       ),
@@ -111,8 +118,9 @@ class _LoginPageState extends State<LoginPage> {
                           prefixIcon: Icon(Icons.lock),
                         ),
                         validator: (value) {
-                          if (value == null || value.length < 6)
+                          if (value == null || value.length < 6) {
                             return 'Password must be at least 6 characters';
+                          }
                           return null;
                         },
                       ),

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import '../../../../features/news/presentation/pages/news_page.dart';
-import '../../../../features/crypto/presentation/pages/crypto_page.dart';
+import '../news/presentation/pages/news_page.dart';
+import '../crypto/presentation/pages/crypto_page.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class NavigationController extends StatefulWidget {
+  const NavigationController({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<NavigationController> createState() => _NavigationControllerState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _NavigationControllerState extends State<NavigationController> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = const [

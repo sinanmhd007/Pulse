@@ -4,18 +4,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pulse/features/news/domain/entities/news_article.dart';
 
-
-class SlidableNewsCard extends StatelessWidget {
+class NewsCard extends StatelessWidget {
   final NewsArticle article;
   final Function(String url) onTap;
-  
 
-  const SlidableNewsCard({
-    super.key,
-    required this.article,
-    required this.onTap,
-   
-  });
+  const NewsCard({super.key, required this.article, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +26,7 @@ class SlidableNewsCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             padding: const EdgeInsets.all(8),
           ),
+          SizedBox(width: MediaQuery.of(context).size.width * 0.02),
           SlidableAction(
             onPressed: (_) {},
             backgroundColor: Colors.green,
@@ -118,12 +112,16 @@ class SlidableNewsCard extends StatelessWidget {
                           ),
                         ),
                         const Spacer(),
-                        Text(
-                          article.sourceName ?? 'Web',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.blueAccent,
-                            fontWeight: FontWeight.bold,
+                        Flexible(
+                          child: Text(
+                            article.sourceName ?? 'Web',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.blueAccent,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ],
@@ -137,7 +135,8 @@ class SlidableNewsCard extends StatelessWidget {
       ),
     );
   }
-   String timeAgo(DateTime d) {
+
+  String timeAgo(DateTime d) {
     Duration diff = DateTime.now().difference(d);
     if (diff.inDays > 1) return '${diff.inDays} days ago';
     if (diff.inDays == 1) return '1 day ago';

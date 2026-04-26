@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:pulse/features/news/presentation/widgets/build_slidable_news_card.dart';
+import 'package:pulse/features/news/presentation/widgets/news_card.dart';
 import 'package:pulse/features/news/presentation/widgets/news_page_content.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../bloc/news_bloc.dart';
@@ -30,7 +30,7 @@ class _NewsPageState extends State<NewsPage> {
 
   Future<void> _launchUrl(String url) async {
     final uri = Uri.parse(url);
-    if (!await launchUrl(uri, mode: LaunchMode.inAppWebView)) {
+    if (!await launchUrl(uri, mode: LaunchMode.platformDefault)) {
       debugPrint('Could not launch $url');
     }
   }
@@ -98,7 +98,7 @@ class _NewsPageState extends State<NewsPage> {
                 onSearchChanged: _onSearchChanged, 
                 toggleSearch: _toggleSearch, 
                 launchUrl: _launchUrl, 
-                buildSlidableNewsCard: (context, article) => SlidableNewsCard(
+                buildSlidableNewsCard: (context, article) => NewsCard(
                   article: article,
                   onTap: _launchUrl,
                 

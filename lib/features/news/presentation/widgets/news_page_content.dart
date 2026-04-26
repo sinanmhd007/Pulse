@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:pulse/features/news/domain/entities/news_article.dart';
-import 'package:pulse/features/news/presentation/widgets/build_carousel_item.dart';
+import 'package:pulse/features/news/presentation/widgets/news_slidable_item.dart';
 
 
 class NewsPageContent extends StatelessWidget {
@@ -152,7 +152,7 @@ class NewsPageContent extends StatelessWidget {
               ),
               itemBuilder: (context, index, realIdx) {
                 final article = breakingNews[index];
-                return CarouselItem(
+                return NewsSlidableItem(
                   article: article,
                   onTap: launchUrl,
                 );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:pulse/features/home/presentation/pages/home_page.dart';
+import 'package:pulse/features/bottom_navigation/navigation_controller.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
@@ -52,7 +52,7 @@ class _SignupPageState extends State<SignupPage> {
                   );
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (_) => HomePage()),
+                    MaterialPageRoute(builder: (_) => NavigationController()),
                   );
                 } else if (state is AuthError) {
                   ScaffoldMessenger.of(context).showSnackBar(

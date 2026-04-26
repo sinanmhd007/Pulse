@@ -3,15 +3,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pulse/features/news/domain/entities/news_article.dart';
 
-class CarouselItem extends StatelessWidget {
+class NewsSlidableItem extends StatelessWidget {
   final NewsArticle article;
   final Function(String url) onTap;
 
-  const CarouselItem({
-    super.key,
-    required this.article,
-    required this.onTap,
-  });
+  const NewsSlidableItem({super.key, required this.article, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +70,8 @@ class CarouselItem extends StatelessWidget {
                       ),
                       child: Text(
                         article.sourceName ?? 'News',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,
