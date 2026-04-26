@@ -47,14 +47,11 @@ class _SplashPageState extends State<SplashPage>
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthAuthenticated) {
-          // Go to Home (we'll implement later)
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (_) => NavigationController()),
           );
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Logged in! Go to Home')),
-          );
+        
         } else if (state is AuthUnauthenticated) {
           // Check if first time to show Onboarding, or straight to Login
           // For now, go to Login
