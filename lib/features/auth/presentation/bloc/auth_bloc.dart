@@ -6,14 +6,14 @@ import '../../domain/usecases/sign_in_google.dart';
 import '../../domain/usecases/sign_out.dart';
 // import '../../domain/usecases/sign_up.dart'; // we can just reuse sign-in params for sign up, but wait we didn't export SignUp separately, it's in sign_up.dart oh wait, I put SignUp in sign_in_up.dart 
 // Let's import the right file for SignUp
-import '../../domain/usecases/sign_in_up.dart' as sign_up_usecase;
+import '../../domain/usecases/sign_in_up.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final GetCurrentUser getCurrentUser;
   final SignIn signIn;
-  final sign_up_usecase.SignUp signUp;
+  final SignUp signUp;
   final SignInGoogle signInGoogle;
   final SignOut signOut;
 
