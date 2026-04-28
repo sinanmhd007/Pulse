@@ -11,7 +11,7 @@ Pulse is a premium Flutter application demonstrating the integration of real-tim
 - **Offline Support**: Gracefully handles network loss and enables local data caching.
 
 ## Screenshots 
-
+https://github.com/user-attachments/assets/f3b364b4-6512-411d-829b-8ac00fe6aeeb
 
 ## Tech Stack 
 - **Flutter** & **Dart**
