@@ -121,11 +121,6 @@ class _NewsPageMobileState extends State<NewsPageMobile> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Text(
-                    state.message,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.grey),
-                  ),
                   const SizedBox(height: 30),
                   ElevatedButton.icon(
                     onPressed: () =>
