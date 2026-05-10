@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import '../../../../core/error/exceptions.dart';
+import '../../../../core/network/web_request_helper.dart';
 import '../models/crypto_model.dart';
 
 abstract class CryptoRemoteDataSource {
@@ -15,8 +16,10 @@ class CryptoRemoteDataSourceImpl implements CryptoRemoteDataSource {
   @override
   Future<List<CryptoModel>> getLiveCryptoPrices() async {
     try {
-      final response = await dio.get(
-        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false',
+      final response = await WebRequestHelper.getWithWebCorsFallback(
+        dio: dio,
+        url:
+            'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false',
       );
       final List<dynamic> jsonList = response.data;
       return jsonList.map((json) => CryptoModel.fromJson(json)).toList();

@@ -24,6 +24,7 @@ class _NewsPageMobileState extends State<NewsPageMobile> {
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _searchController.dispose();
     super.dispose();
   }
@@ -36,7 +37,7 @@ class _NewsPageMobileState extends State<NewsPageMobile> {
   }
 
   void _onSearchChanged(String query) {
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce?.cancel();
 
     _debounce = Timer(const Duration(milliseconds: 500), () {
       if (query.trim().isNotEmpty) {
@@ -69,7 +70,7 @@ class _NewsPageMobileState extends State<NewsPageMobile> {
             );
           } else if (state is NewsLoaded) {
             final articles = state.articles
-                .where((a) => a.imageUrl != null && a.imageUrl!.isNotEmpty)
+                .where((a) => (a.imageUrl ?? '').isNotEmpty)
                 .toList();
 
             final breakingNews = articles.take(5).toList();
