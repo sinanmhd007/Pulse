@@ -19,20 +19,20 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
   Future<List<NewsModel>> getLiveNews() async {
     final resolvedApiKey = apiKey;
     if (resolvedApiKey == null || resolvedApiKey.isEmpty) {
-      throw ServerException('Missing NEWS_API_KEY in .env');
+      throw ServerException('Failed to Load News');
     }
 
     try {
       final response = await WebRequestHelper.getWithWebCorsFallback(
         dio: dio,
         url:
-            'https://gnews.io/api/v4/top-headlines?country=us&lang=en&token=$resolvedApiKey',
+             'https://newsdata.io/api/1/news?apikey=$resolvedApiKey&country=us&language=en',
       );
       
       final List<dynamic> articlesJson = response.data['articles'];
       return articlesJson.map((json) => NewsModel.fromJson(json)).toList();
     } catch (e) {
-      throw ServerException();
+      throw ServerException('Failed to Load News');
     }
   }
 
@@ -40,19 +40,19 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
   Future<List<NewsModel>> searchNews(String query) async {
     final resolvedApiKey = apiKey;
     if (resolvedApiKey == null || resolvedApiKey.isEmpty) {
-      throw ServerException('Missing NEWS_API_KEY in .env');
+      throw ServerException('Failed to Load News');
     }
 
     try {
       final response = await WebRequestHelper.getWithWebCorsFallback(
         dio: dio,
         url:
-            'https://gnews.io/api/v4/search?q=$query&lang=en&token=$resolvedApiKey',
+            'https://newsdata.io/api/1/news?apikey=$resolvedApiKey&q=$query&language=en',
       );
       final List<dynamic> articlesJson = response.data['articles'];
       return articlesJson.map((json) => NewsModel.fromJson(json)).toList();
     } catch (e) {
-      throw ServerException();
+      throw ServerException('Failed to Load News');
     }
   }
 }

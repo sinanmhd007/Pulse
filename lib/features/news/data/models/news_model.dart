@@ -14,11 +14,11 @@ class NewsModel extends NewsArticle {
     return NewsModel(
       title: json['title'] ?? 'No Title',
       description: json['description'] ?? 'No Description',
-      url: json['url'] ?? '',
+      url: json['link'] ?? '',
       sourceName: json['source']?['name'],
-      imageUrl: json['urlToImage'],
-      publishedAt: json['publishedAt'] != null
-          ? DateTime.parse(json['publishedAt'])
+      imageUrl: json['image_url'],
+      publishedAt: json['pubDate'] != null
+          ? DateTime.parse(json['pubDate'])
           : DateTime.now(),
     );
   }
