@@ -25,8 +25,10 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
     try {
       final response = await WebRequestHelper.getWithWebCorsFallback(
         dio: dio,
-        url: 'https://newsapi.org/v2/top-headlines?country=us&apiKey=$resolvedApiKey',
+        url:
+            'https://gnews.io/api/v4/top-headlines?country=us&lang=en&token=$resolvedApiKey',
       );
+      
       final List<dynamic> articlesJson = response.data['articles'];
       return articlesJson.map((json) => NewsModel.fromJson(json)).toList();
     } catch (e) {
@@ -44,7 +46,8 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
     try {
       final response = await WebRequestHelper.getWithWebCorsFallback(
         dio: dio,
-        url: 'https://newsapi.org/v2/everything?q=$query&apiKey=$resolvedApiKey',
+        url:
+            'https://gnews.io/api/v4/search?q=$query&lang=en&token=$resolvedApiKey',
       );
       final List<dynamic> articlesJson = response.data['articles'];
       return articlesJson.map((json) => NewsModel.fromJson(json)).toList();

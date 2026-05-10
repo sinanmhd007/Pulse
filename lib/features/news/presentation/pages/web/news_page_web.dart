@@ -91,22 +91,19 @@ class _NewsPageWebState extends State<NewsPageWeb> {
                     context.read<NewsBloc>().add(FetchLiveNews());
                   },
                   child: NewsPageContent(
-                    isSearching: _isSearching, 
-                    isCurrentlySearching: isCurrentlySearching, 
-                    breakingNews: breakingNews, 
-                    todaysNews: todaysNews, 
-                    articles: articles, 
-                    searchController: _searchController, 
-                    onSearchChanged: _onSearchChanged, 
-                    toggleSearch: _toggleSearch, 
-                    launchUrl: _launchUrl, 
-                    buildSlidableNewsCard: (context, article) => NewsCard(
-                      article: article,
-                      onTap: _launchUrl,
-                    ),
+                    isSearching: _isSearching,
+                    isCurrentlySearching: isCurrentlySearching,
+                    breakingNews: breakingNews,
+                    todaysNews: todaysNews,
+                    articles: articles,
+                    searchController: _searchController,
+                    onSearchChanged: _onSearchChanged,
+                    toggleSearch: _toggleSearch,
+                    launchUrl: _launchUrl,
+                    buildSlidableNewsCard: (context, article) =>
+                        NewsCard(article: article, onTap: _launchUrl),
                   ),
                 );
-
               } else if (state is NewsError) {
                 return Center(
                   child: Column(
@@ -157,7 +154,26 @@ class _NewsPageWebState extends State<NewsPageWeb> {
                   ),
                 );
               }
-              return const SizedBox.shrink();
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.newspaper, size: 80, color: Colors.grey),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Press refresh to load news',
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton.icon(
+                      onPressed: () =>
+                          context.read<NewsBloc>().add(FetchLiveNews()),
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('Load News'),
+                    ),
+                  ],
+                ),
+              );
             },
           ),
         ),
