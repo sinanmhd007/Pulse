@@ -10,16 +10,13 @@ import 'features/news/presentation/bloc/news_bloc.dart';
 import 'features/news/presentation/bloc/news_event.dart';
 import 'features/crypto/presentation/bloc/crypto_bloc.dart';
 import 'features/crypto/presentation/bloc/crypto_event.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  try {
-    await Firebase.initializeApp();
-  } catch (e) {
-    debugPrint(
-      'Firebase initialization failed (maybe missing firebase_options.dart): $e',
-    );
-  }
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await dotenv.load(fileName: ".env");
   await di.init();
   runApp(const PulseApp());
