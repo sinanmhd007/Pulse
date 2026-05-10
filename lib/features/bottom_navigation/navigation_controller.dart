@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import '../../core/presentation/widgets/responsive_layout.dart';
 import '../news/presentation/pages/news_page.dart';
 import '../crypto/presentation/pages/crypto_page.dart';
+import 'mobile/navigation_mobile.dart';
+import 'web/navigation_web.dart';
 
 class NavigationController extends StatefulWidget {
   const NavigationController({super.key});
@@ -19,25 +22,24 @@ class _NavigationControllerState extends State<NavigationController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _pages[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
+    return ResponsiveLayout(
+      mobileLayout: NavigationMobile(
         currentIndex: _currentIndex,
-        onTap: (index) {
+        onTabSelected: (index) {
           setState(() {
             _currentIndex = index;
           });
         },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.article),
-            label: 'News',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.currency_bitcoin),
-            label: 'Crypto',
-          ),
-        ],
+        pages: _pages,
+      ),
+      webLayout: NavigationWeb(
+        currentIndex: _currentIndex,
+        onTabSelected: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        pages: _pages,
       ),
     );
   }
