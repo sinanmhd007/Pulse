@@ -177,27 +177,45 @@ class NewsPageContent extends StatelessWidget {
           ),
 
         /// News List
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              final listToUse = isCurrentlySearching ? articles : todaysNews;
+        SliverLayoutBuilder(
+          builder: (context, constraints) {
+            final listToUse = isCurrentlySearching ? articles : todaysNews;
+            final width = constraints.crossAxisExtent;
 
-              if (index >= listToUse.length) {
-                return const SizedBox.shrink();
-              }
-
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
+            if (width < 700) {
+              return SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    child: buildSlidableNewsCard(context, listToUse[index]),
+                  ),
+                  childCount: listToUse.length,
                 ),
-                child: buildSlidableNewsCard(context, listToUse[index]),
               );
-            },
-            childCount: isCurrentlySearching
-                ? articles.length
-                : todaysNews.length,
-          ),
+            }
+
+            final crossAxisCount = width >= 1120 ? 3 : 2;
+
+            return SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              sliver: SliverGrid(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) =>
+                      buildSlidableNewsCard(context, listToUse[index]),
+                  childCount: listToUse.length,
+                ),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  mainAxisSpacing: 18,
+                  crossAxisSpacing: 18,
+                  childAspectRatio: crossAxisCount == 3 ? 0.92 : 1.08,
+                ),
+              ),
+            );
+          },
         ),
 
         const SliverToBoxAdapter(child: SizedBox(height: 30)),
