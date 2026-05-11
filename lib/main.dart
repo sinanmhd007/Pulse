@@ -6,8 +6,8 @@ import 'core/theme/app_theme.dart';
 import 'core/di/injection_container.dart' as di;
 import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/auth/presentation/pages/splash_page.dart';
-import 'features/news/presentation/bloc/news_bloc.dart';
-import 'features/news/presentation/bloc/news_event.dart';
+import 'features/stocks/presentation/bloc/stock_bloc.dart';
+import 'features/stocks/presentation/bloc/stock_event.dart';
 import 'features/crypto/presentation/bloc/crypto_bloc.dart';
 import 'features/crypto/presentation/bloc/crypto_event.dart';
 import 'firebase_options.dart';
@@ -30,7 +30,7 @@ class PulseApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => di.sl<AuthBloc>()),
-        BlocProvider(create: (_) => di.sl<NewsBloc>()..add(FetchLiveNews())),
+        BlocProvider(create: (_) => di.sl<StockBloc>()..add(FetchLiveStocks())),
         BlocProvider(
           create: (_) => di.sl<CryptoBloc>()..add(FetchLiveCrypto()),
         ),

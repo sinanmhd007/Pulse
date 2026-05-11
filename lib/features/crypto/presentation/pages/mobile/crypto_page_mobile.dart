@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'dart:async';
 
 import 'package:pulse/features/crypto/presentation/widgets/market_screen.dart';
 import '../../bloc/crypto_bloc.dart';
@@ -17,19 +18,33 @@ class CryptoPageMobile extends StatefulWidget {
 
 class _CryptoPageMobileState extends State<CryptoPageMobile> {
   final TextEditingController _searchController = TextEditingController();
+  Timer? _debounce;
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _searchController.dispose();
     super.dispose();
   }
 
   void _onSearchChanged(String query) {
-    if (query.trim().isNotEmpty) {
-      context.read<CryptoBloc>().add(SearchLiveCrypto(query.trim()));
-    } else {
-      context.read<CryptoBloc>().add(FetchLiveCrypto());
-    }
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 400), () {
+      final trimmed = query.trim();
+      if (trimmed.isNotEmpty) {
+        context.read<CryptoBloc>().add(SearchLiveCrypto(trimmed));
+      } else {
+        context.read<CryptoBloc>().add(FetchLiveCrypto());
+      }
+    });
+  }
+
+  void _onClearSearch() {
+    _debounce?.cancel();
+    _searchController.clear();
+    context.read<CryptoBloc>().add(FetchLiveCrypto());
+    FocusScope.of(context).unfocus();
+    setState(() {});
   }
 
   @override
@@ -59,15 +74,18 @@ class _CryptoPageMobileState extends State<CryptoPageMobile> {
 
             return RefreshIndicator(
               onRefresh: () async {
+                _debounce?.cancel();
                 _searchController.clear();
                 context.read<CryptoBloc>().add(FetchLiveCrypto());
               },
               child: MarketScreen(
-                isSearching: isSearching, 
-                onSearchChanged: _onSearchChanged, 
-                topMovers: topMovers, 
-                allCoins: allCoins
-              )
+                isSearching: isSearching,
+                searchController: _searchController,
+                onSearchChanged: _onSearchChanged,
+                onClearSearch: _onClearSearch,
+                topMovers: topMovers,
+                allCoins: allCoins,
+              ),
             );
           } else if (state is CryptoError) {
             return Center(

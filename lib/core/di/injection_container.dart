@@ -16,13 +16,13 @@ import '../../features/auth/domain/usecases/sign_out.dart';
 import '../../features/auth/domain/usecases/sign_in_up.dart' as sign_up_usecase;
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 
-import '../../features/news/data/datasources/news_local_data_source.dart';
-import '../../features/news/data/datasources/news_remote_data_source.dart';
-import '../../features/news/data/repositories/news_repository_impl.dart';
-import '../../features/news/domain/repositories/news_repository.dart';
-import '../../features/news/domain/usecases/get_live_news.dart';
-import '../../features/news/domain/usecases/search_news.dart';
-import '../../features/news/presentation/bloc/news_bloc.dart';
+import '../../features/stocks/data/datasources/stock_local_data_source.dart';
+import '../../features/stocks/data/datasources/stock_remote_data_source.dart';
+import '../../features/stocks/data/repositories/stock_repository_impl.dart';
+import '../../features/stocks/domain/repositories/stock_repository.dart';
+import '../../features/stocks/domain/usecases/get_live_stocks.dart';
+import '../../features/stocks/domain/usecases/search_stocks.dart';
+import '../../features/stocks/presentation/bloc/stock_bloc.dart';
 
 import '../../features/crypto/data/datasources/crypto_local_data_source.dart';
 import '../../features/crypto/data/datasources/crypto_remote_data_source.dart';
@@ -68,25 +68,25 @@ Future<void> init() async {
     ),
   );
 
-  //! Features - News
-  sl.registerFactory(() => NewsBloc(
-        getLiveNews: sl(),
-        searchNews: sl(),
+  //! Features - Stocks
+  sl.registerFactory(() => StockBloc(
+        getLiveStocks: sl(),
+        searchStocks: sl(),
       ));
-  sl.registerLazySingleton(() => GetLiveNews(sl()));
-  sl.registerLazySingleton(() => SearchNews(sl()));
-  sl.registerLazySingleton<NewsRepository>(
-    () => NewsRepositoryImpl(
+  sl.registerLazySingleton(() => GetLiveStocks(sl()));
+  sl.registerLazySingleton(() => SearchStocks(sl()));
+  sl.registerLazySingleton<StockRepository>(
+    () => StockRepositoryImpl(
       remoteDataSource: sl(),
       localDataSource: sl(),
       networkInfo: sl(),
     ),
   );
-  sl.registerLazySingleton<NewsRemoteDataSource>(
-    () => NewsRemoteDataSourceImpl(dio: sl()),
+  sl.registerLazySingleton<StockRemoteDataSource>(
+    () => StockRemoteDataSourceImpl(dio: sl()),
   );
-  sl.registerLazySingleton<NewsLocalDataSource>(
-    () => NewsLocalDataSourceImpl(sharedPreferences: sl()),
+  sl.registerLazySingleton<StockLocalDataSource>(
+    () => StockLocalDataSourceImpl(sharedPreferences: sl()),
   );
 
   //! Features - Crypto

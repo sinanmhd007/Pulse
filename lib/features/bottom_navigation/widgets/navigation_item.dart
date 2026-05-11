@@ -14,9 +14,9 @@ class NavigationItem {
 
 const navigationItems = [
   NavigationItem(
-    label: 'News',
-    icon: Icons.article_outlined,
-    selectedIcon: Icons.article_rounded,
+    label: 'Stocks',
+    icon: Icons.show_chart_outlined,
+    selectedIcon: Icons.show_chart_rounded,
   ),
   NavigationItem(
     label: 'Crypto',

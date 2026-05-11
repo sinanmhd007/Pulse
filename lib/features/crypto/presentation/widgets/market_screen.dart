@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:pulse/features/crypto/domain/entities/crypto_coin.dart';
 import 'package:pulse/features/crypto/presentation/widgets/crypto_card.dart';
 import 'package:pulse/features/crypto/presentation/widgets/top_mover_card.dart';
 
 class MarketScreen extends StatelessWidget {
   final bool isSearching;
-  final TextEditingController _searchController = TextEditingController();
-  final ValueChanged<String> _onSearchChanged;
-  final List topMovers;
-  final List allCoins;
+  final TextEditingController searchController;
+  final ValueChanged<String> onSearchChanged;
+  final VoidCallback onClearSearch;
+  final List<CryptoCoin> topMovers;
+  final List<CryptoCoin> allCoins;
+  final bool useWideLayout;
 
-  MarketScreen({
+  const MarketScreen({
     super.key,
     required this.isSearching,
-    required ValueChanged<String> onSearchChanged,
+    required this.searchController,
+    required this.onSearchChanged,
+    required this.onClearSearch,
     required this.topMovers,
     required this.allCoins,
-  }) : 
-  _onSearchChanged = onSearchChanged;
+    this.useWideLayout = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +65,8 @@ class MarketScreen extends StatelessWidget {
                 ],
               ),
               child: TextField(
-                controller: _searchController,
-                onChanged: _onSearchChanged,
+                controller: searchController,
+                onChanged: onSearchChanged,
                 decoration: InputDecoration(
                   hintText: 'Search coins...',
                   hintStyle: const TextStyle(color: Colors.grey),
@@ -69,11 +74,7 @@ class MarketScreen extends StatelessWidget {
                   suffixIcon: isSearching
                       ? IconButton(
                           icon: const Icon(Icons.clear, color: Colors.grey),
-                          onPressed: () {
-                            _searchController.clear();
-                            _onSearchChanged('');
-                            FocusScope.of(context).unfocus();
-                          },
+                          onPressed: onClearSearch,
                         )
                       : null,
                   border: InputBorder.none,
@@ -114,7 +115,7 @@ class MarketScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: topMovers.length,
                 itemBuilder: (context, index) {
-                  return TopMoverCard(coin: allCoins[index]);
+                  return TopMoverCard(coin: topMovers[index]);
                 },
               ),
             ),
@@ -151,23 +152,54 @@ class MarketScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(40.0),
                   child: Center(
                     child: Text(
-                      'No coins found for "${_searchController.text}"',
+                      'No coins found for "${searchController.text}"',
                       style: const TextStyle(color: Colors.grey, fontSize: 16),
                     ),
                   ),
                 ),
               )
-            : SliverList(
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 6.0,
+            : useWideLayout
+                ? SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    sliver: SliverLayoutBuilder(
+                      builder: (context, constraints) {
+                        final width = constraints.crossAxisExtent;
+                        final crossAxisCount = width > 1200
+                            ? 3
+                            : width > 820
+                                ? 2
+                                : 1;
+
+                        return SliverGrid(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) => CryptoCard(
+                              coin: allCoins[index],
+                              rank: index + 1,
+                            ),
+                            childCount: allCoins.length,
+                          ),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: crossAxisCount,
+                            crossAxisSpacing: 14,
+                            mainAxisSpacing: 14,
+                            childAspectRatio: crossAxisCount == 1 ? 2.6 : 1.65,
+                          ),
+                        );
+                      },
                     ),
-                    child: CryptoCard(coin: allCoins[index], rank: index + 1),
-                  );
-                }, childCount: allCoins.length),
-              ),
+                  )
+                : SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 6.0,
+                        ),
+                        child: CryptoCard(coin: allCoins[index], rank: index + 1),
+                      );
+                    }, childCount: allCoins.length),
+                  ),
         const SliverToBoxAdapter(child: SizedBox(height: 30)),
       ],
     );

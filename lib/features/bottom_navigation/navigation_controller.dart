@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/presentation/widgets/responsive_layout.dart';
-import '../news/presentation/pages/news_page.dart';
+import '../stocks/presentation/pages/stock_page.dart';
 import '../crypto/presentation/pages/crypto_page.dart';
 import 'mobile/navigation_mobile.dart';
 import 'web/navigation_web.dart';
@@ -16,7 +16,7 @@ class _NavigationControllerState extends State<NavigationController> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = const [
-    NewsPage(),
+    StockPage(),
     CryptoPage(),
   ];
 

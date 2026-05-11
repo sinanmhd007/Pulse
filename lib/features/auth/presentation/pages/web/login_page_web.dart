@@ -80,7 +80,7 @@ class _LoginPageWebState extends State<LoginPageWeb> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Your all-in-one financial and news hub.',
+                      'Your all-in-one financial market hub.',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         color: Colors.white70,
                       ),
