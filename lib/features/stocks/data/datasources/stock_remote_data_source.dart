@@ -1,185 +1,197 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../../core/error/exceptions.dart';
-import '../../../../core/network/web_request_helper.dart';
 import '../models/stock_model.dart';
+
+/// ===============================
+/// REMOTE DATASOURCE
+/// ===============================
 
 abstract class StockRemoteDataSource {
   Future<List<StockModel>> getLiveStocks();
-  Future<List<StockModel>> searchStocks(String query);
+
+  Future<List<StockModel>> searchStocks(
+    String query,
+  );
 }
 
-class StockRemoteDataSourceImpl implements StockRemoteDataSource {
+class StockRemoteDataSourceImpl
+    implements StockRemoteDataSource {
   final Dio dio;
-  String get apiKey => 'd80j3mpr01qt5k5v5rcgd80j3mpr01qt5k5v5rd0';
-  static const int _searchResultLimit = 10;
-  static const Duration _quoteCacheTtl = Duration(seconds: 45);
 
-  final Map<String, _CachedStock> _stockCache = {};
-  final Map<String, List<StockModel>> _searchCache = {};
+  static const String apiKey =
+      '00d958f046b4fac53e47ce7d';
 
-  static const List<String> _defaultSymbols = [
-    'AAPL',
-    'MSFT',
-    'NVDA',
-    'AMZN',
-    'GOOGL',
-    'META',
-    'TSLA',
-    'NFLX',
-    'AMD',
-    'INTC',
+  static const List<String> _currencies = [
+    'INR',
+    'EUR',
+    'GBP',
+    'JPY',
+    'AUD',
+    'CAD',
+    'AED',
+    'SAR',
+    'CNY',
+    'SGD',
+    'CHF',
+    'NZD',
   ];
 
-  StockRemoteDataSourceImpl({required this.dio});
+  /// In-memory search cache
+  List<StockModel> _cachedCurrencies = [];
+
+  StockRemoteDataSourceImpl({
+    required this.dio,
+  });
 
   @override
-  Future<List<StockModel>> getLiveStocks() async {
-    final key = apiKey;
-    if (key.isEmpty) {
-      throw ServerException('Missing FINNHUB_API_KEY in .env');
-    }
-
+  Future<List<StockModel>>
+      getLiveStocks() async {
     try {
-      return _fetchStocksBySymbols(_defaultSymbols, key);
-    } catch (_) {
-      throw ServerException();
-    }
-  }
-
-  @override
-  Future<List<StockModel>> searchStocks(String query) async {
-    final key = apiKey;
-    if (key.isEmpty) {
-      throw ServerException('Missing FINNHUB_API_KEY in .env');
-    }
-
-    final trimmedQuery = query.trim().toUpperCase();
-    if (trimmedQuery.isEmpty) {
-      return getLiveStocks();
-    }
-
-    final cachedSearch = _searchCache[trimmedQuery];
-    if (cachedSearch != null) {
-      return cachedSearch;
-    }
-
-    try {
-      final encodedQuery = Uri.encodeQueryComponent(trimmedQuery);
-      final searchResponse = await WebRequestHelper.getWithWebCorsFallback(
-        dio: dio,
-        url:
-            'https://finnhub.io/api/v1/search?q=$encodedQuery&exchange=US&token=$key',
+      final response = await dio.get(
+        'https://v6.exchangerate-api.com/v6/$apiKey/latest/USD',
       );
 
-      final List<dynamic> result =
-          (searchResponse.data['result'] as List?) ?? [];
-      final symbols = <String>{
-        if (_looksLikeTicker(trimmedQuery)) trimmedQuery,
-        ...result
-            .whereType<Map<String, dynamic>>()
-            .where(_isTradableCommonStock)
-            .map((item) => item['symbol']?.toString().toUpperCase())
-            .whereType<String>()
-            .map(_cleanFinnhubSymbol)
-            .where((symbol) => symbol.isNotEmpty),
-      }.take(_searchResultLimit).toList();
+      final rates =
+          response.data['conversion_rates'];
 
-      if (symbols.isEmpty) {
-        _searchCache[trimmedQuery] = const [];
-        return [];
-      }
+      final data = _currencies.map((currency) {
+        final rate =
+            (rates[currency] ?? 0).toDouble();
 
-      final stocks = await _fetchStocksBySymbols(symbols, key);
-      _searchCache[trimmedQuery] = stocks;
-      return stocks;
-    } catch (_) {
-      throw ServerException();
+        return StockModel(
+          symbol: currency,
+
+          name: 'USD/$currency',
+
+          logoUrl: null,
+
+          currentPrice: rate,
+
+          change: 0,
+
+          changePercent: 0,
+
+          highPrice: rate,
+
+          lowPrice: rate,
+
+          openPrice: rate,
+
+          previousClosePrice: rate,
+        );
+      }).toList();
+
+      /// Save in memory
+      _cachedCurrencies = data;
+
+      return data;
+    } catch (e) {
+      throw ServerException(
+        'Failed to load currency market data',
+      );
     }
   }
 
-  Future<List<StockModel>> _fetchStocksBySymbols(
-    List<String> symbols,
-    String key,
+  @override
+  Future<List<StockModel>> searchStocks(
+    String query,
   ) async {
-    final futures = symbols.map((symbol) => _fetchStock(symbol, key));
-    final stocks = (await Future.wait(
-      futures,
-    )).whereType<StockModel>().toList();
-    stocks.sort(
-      (a, b) => b.changePercent.abs().compareTo(a.changePercent.abs()),
-    );
-    return stocks;
-  }
+    final q = query
+        .trim()
+        .toUpperCase();
 
-  Future<StockModel?> _fetchStock(String symbol, String key) async {
-    final cachedStock = _freshCachedStock(symbol);
-    if (cachedStock != null) {
-      return cachedStock;
+    /// Fetch once if empty
+    if (_cachedCurrencies.isEmpty) {
+      await getLiveStocks();
     }
 
-    try {
-      final quoteFuture = WebRequestHelper.getWithWebCorsFallback(
-        dio: dio,
-        url: 'https://finnhub.io/api/v1/quote?symbol=$symbol&token=$key',
-      );
-      final profileFuture = WebRequestHelper.getWithWebCorsFallback(
-        dio: dio,
-        url:
-            'https://finnhub.io/api/v1/stock/profile2?symbol=$symbol&token=$key',
-      );
-
-      final responses = await Future.wait([quoteFuture, profileFuture]);
-      final quote = responses[0].data as Map<String, dynamic>;
-      final profile = responses[1].data as Map<String, dynamic>;
-
-      final stock = StockModel.fromFinnhub(
-        symbol: symbol,
-        quoteJson: quote,
-        profileJson: profile,
-      );
-
-      if (stock.currentPrice <= 0) {
-        return null;
-      }
-
-      _stockCache[symbol] = _CachedStock(stock, DateTime.now());
-      return stock;
-    } catch (_) {
-      return null;
-    }
-  }
-
-  StockModel? _freshCachedStock(String symbol) {
-    final cached = _stockCache[symbol];
-    if (cached == null) {
-      return null;
+    /// Return all
+    if (q.isEmpty) {
+      return _cachedCurrencies;
     }
 
-    if (DateTime.now().difference(cached.fetchedAt) > _quoteCacheTtl) {
-      return null;
-    }
-
-    return cached.stock;
-  }
-
-  static bool _isTradableCommonStock(Map<String, dynamic> item) {
-    final type = item['type']?.toString().toLowerCase() ?? '';
-    final symbol = item['symbol']?.toString() ?? '';
-    return type.contains('common stock') && _looksLikeTicker(symbol);
-  }
-
-  static bool _looksLikeTicker(String value) {
-    return RegExp(r'^[A-Z.]{1,8}$').hasMatch(value.trim().toUpperCase());
-  }
-
-  static String _cleanFinnhubSymbol(String symbol) {
-    return symbol.trim().toUpperCase().split(' ').first;
+    /// Local filtering
+    return _cachedCurrencies.where((item) {
+      return item.symbol
+              .toUpperCase()
+              .contains(q) ||
+          item.name
+              .toUpperCase()
+              .contains(q);
+    }).toList();
   }
 }
 
-class _CachedStock {
-  final StockModel stock;
-  final DateTime fetchedAt;
+/// ===============================
+/// LOCAL DATASOURCE
+/// ===============================
 
-  const _CachedStock(this.stock, this.fetchedAt);
+abstract class StockLocalDataSource {
+  Future<List<StockModel>>
+      getLastLiveStocks();
+
+  Future<void> cacheLiveStocks(
+    List<StockModel> stocksToCache,
+  );
+}
+
+const cachedLiveStocks =
+    'CACHED_LIVE_STOCKS';
+
+class StockLocalDataSourceImpl
+    implements StockLocalDataSource {
+  final SharedPreferences
+      sharedPreferences;
+
+  StockLocalDataSourceImpl({
+    required this.sharedPreferences,
+  });
+
+  @override
+  Future<void> cacheLiveStocks(
+    List<StockModel> stocksToCache,
+  ) {
+    return sharedPreferences.setString(
+      cachedLiveStocks,
+
+      json.encode(
+        stocksToCache
+            .map((e) => e.toJson())
+            .toList(),
+      ),
+    );
+  }
+
+  @override
+  Future<List<StockModel>>
+      getLastLiveStocks() {
+    final jsonString =
+        sharedPreferences.getString(
+      cachedLiveStocks,
+    );
+
+    if (jsonString == null) {
+      throw CacheException();
+    }
+
+    final List<dynamic> jsonList =
+        json.decode(jsonString)
+            as List<dynamic>;
+
+    return Future.value(
+      jsonList
+          .map(
+            (json) =>
+                StockModel.fromJson(
+              json
+                  as Map<String, dynamic>,
+            ),
+          )
+          .toList(),
+    );
+  }
 }

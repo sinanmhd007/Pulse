@@ -16,7 +16,6 @@ import '../../features/auth/domain/usecases/sign_out.dart';
 import '../../features/auth/domain/usecases/sign_in_up.dart' as sign_up_usecase;
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 
-import '../../features/stocks/data/datasources/stock_local_data_source.dart';
 import '../../features/stocks/data/datasources/stock_remote_data_source.dart';
 import '../../features/stocks/data/repositories/stock_repository_impl.dart';
 import '../../features/stocks/domain/repositories/stock_repository.dart';

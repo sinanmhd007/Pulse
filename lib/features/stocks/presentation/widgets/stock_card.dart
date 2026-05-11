@@ -13,6 +13,7 @@ class StockCard extends StatelessWidget {
     final priceFmt = NumberFormat.currency(symbol: '\$', decimalDigits: 2);
     final percentFmt = NumberFormat("+#0.00;-#0.00");
     final changeFmt = NumberFormat("+#0.00;-#0.00");
+
     final isNegative = stock.changePercent < 0;
     final accent = isNegative ? Colors.redAccent : Colors.green;
 
@@ -32,10 +33,12 @@ class StockCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          /// Header
           Row(
             children: [
               _Logo(logoUrl: stock.logoUrl),
               const SizedBox(width: 10),
+
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,6 +50,7 @@ class StockCard extends StatelessWidget {
                         fontSize: 16,
                       ),
                     ),
+
                     Text(
                       stock.name,
                       maxLines: 1,
@@ -61,14 +65,26 @@ class StockCard extends StatelessWidget {
               ),
             ],
           ),
+
           const SizedBox(height: 14),
+
+          /// Price
           Text(
             priceFmt.format(stock.currentPrice),
-            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+            ),
           ),
+
           const SizedBox(height: 8),
+
+          /// Change Badge
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 6,
+            ),
             decoration: BoxDecoration(
               color: accent.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(999),
@@ -81,16 +97,30 @@ class StockCard extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 14),
-          Wrap(
-            spacing: 12,
-            runSpacing: 8,
+
+          const SizedBox(height: 16),
+
+          /// Metrics
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _Metric(label: 'Open', value: priceFmt.format(stock.openPrice)),
-              _Metric(label: 'High', value: priceFmt.format(stock.highPrice)),
-              _Metric(label: 'Low', value: priceFmt.format(stock.lowPrice)),
               _Metric(
-                label: 'Prev Close',
+                label: 'Open',
+                value: priceFmt.format(stock.openPrice),
+              ),
+
+              _Metric(
+                label: 'High',
+                value: priceFmt.format(stock.highPrice),
+              ),
+
+              _Metric(
+                label: 'Low',
+                value: priceFmt.format(stock.lowPrice),
+              ),
+
+              _Metric(
+                label: 'Prev',
                 value: priceFmt.format(stock.previousClosePrice),
               ),
             ],
@@ -111,7 +141,7 @@ class _Logo extends StatelessWidget {
     if (logoUrl == null || logoUrl!.isEmpty) {
       return const CircleAvatar(
         radius: 20,
-        child: Icon(Icons.show_chart_rounded),
+        child: Icon(Icons.currency_exchange),
       );
     }
 
@@ -123,7 +153,7 @@ class _Logo extends StatelessWidget {
         fit: BoxFit.cover,
         errorWidget: (context, url, error) => const CircleAvatar(
           radius: 20,
-          child: Icon(Icons.show_chart_rounded),
+          child: Icon(Icons.currency_exchange),
         ),
       ),
     );
@@ -134,22 +164,35 @@ class _Metric extends StatelessWidget {
   final String label;
   final String value;
 
-  const _Metric({required this.label, required this.value});
+  const _Metric({
+    required this.label,
+    required this.value,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 110,
+    return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontSize: 12,
+            ),
+          ),
+
           const SizedBox(height: 2),
+
           Text(
             value,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontWeight: FontWeight.w700),
+            style: const TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 12,
+            ),
           ),
         ],
       ),
