@@ -51,10 +51,10 @@ class _StockPageMobileState extends State<StockPageMobile> {
   }
 
   void _onClearSearch() {
+    _debounce?.cancel();
     _searchController.clear();
     context.read<StockBloc>().add(FetchLiveStocks());
     FocusScope.of(context).unfocus();
-    setState(() {});
   }
 
   @override
@@ -72,6 +72,7 @@ class _StockPageMobileState extends State<StockPageMobile> {
           if (state is StockLoaded) {
             return RefreshIndicator(
               onRefresh: () async {
+                _debounce?.cancel();
                 _searchController.clear();
                 context.read<StockBloc>().add(FetchLiveStocks());
               },

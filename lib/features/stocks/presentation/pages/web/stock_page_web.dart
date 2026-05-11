@@ -51,9 +51,9 @@ class _StockPageWebState extends State<StockPageWeb> {
   }
 
   void _onClearSearch() {
+    _debounce?.cancel();
     _searchController.clear();
     context.read<StockBloc>().add(FetchLiveStocks());
-    setState(() {});
   }
 
   @override
@@ -74,6 +74,7 @@ class _StockPageWebState extends State<StockPageWeb> {
               if (state is StockLoaded) {
                 return RefreshIndicator(
                   onRefresh: () async {
+                    _debounce?.cancel();
                     _searchController.clear();
                     context.read<StockBloc>().add(FetchLiveStocks());
                   },

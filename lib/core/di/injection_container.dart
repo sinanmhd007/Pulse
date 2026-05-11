@@ -56,7 +56,6 @@ Future<void> init() async {
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
       remoteDataSource: sl(),
-      networkInfo: sl(),
     ),
   );
 

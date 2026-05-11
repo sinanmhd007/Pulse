@@ -21,10 +21,23 @@ class _CryptoPageWebState extends State<CryptoPageWeb> {
   Timer? _debounce;
 
   @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(_onSearchTextChanged);
+  }
+
+  @override
   void dispose() {
+    _searchController.removeListener(_onSearchTextChanged);
     _debounce?.cancel();
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _onSearchTextChanged() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void _onSearchChanged(String query) {
@@ -43,7 +56,6 @@ class _CryptoPageWebState extends State<CryptoPageWeb> {
     _debounce?.cancel();
     _searchController.clear();
     context.read<CryptoBloc>().add(FetchLiveCrypto());
-    setState(() {});
   }
 
   @override

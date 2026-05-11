@@ -8,6 +8,7 @@ import 'stock_state.dart';
 class StockBloc extends Bloc<StockEvent, StockState> {
   final GetLiveStocks getLiveStocks;
   final SearchStocks searchStocks;
+  int _requestToken = 0;
 
   StockBloc({
     required this.getLiveStocks,
@@ -21,8 +22,13 @@ class StockBloc extends Bloc<StockEvent, StockState> {
     FetchLiveStocks event,
     Emitter<StockState> emit,
   ) async {
+    final token = ++_requestToken;
     emit(StockLoading());
     final result = await getLiveStocks(NoParams());
+    if (token != _requestToken) {
+      return;
+    }
+
     result.fold(
       (failure) => emit(StockError(failure.message)),
       (stocks) => emit(StockLoaded(stocks)),
@@ -33,8 +39,12 @@ class StockBloc extends Bloc<StockEvent, StockState> {
     SearchLiveStocks event,
     Emitter<StockState> emit,
   ) async {
-    emit(StockLoading());
+    final token = ++_requestToken;
     final result = await searchStocks(SearchStocksParams(query: event.query));
+    if (token != _requestToken) {
+      return;
+    }
+
     result.fold(
       (failure) => emit(StockError(failure.message)),
       (stocks) => emit(StockLoaded(stocks)),

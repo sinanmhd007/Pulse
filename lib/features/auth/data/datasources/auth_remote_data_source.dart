@@ -96,6 +96,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   AuthException _handleFirebaseException(FirebaseAuthException e) {
     switch (e.code) {
+      case 'network-request-failed':
+        throw NetworkException(
+          'Unable to reach Firebase. Please check your connection and try again.',
+        );
       case 'user-not-found':
         return AuthException('No user found for that email.');
       case 'wrong-password':
