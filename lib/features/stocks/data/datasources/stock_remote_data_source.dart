@@ -11,7 +11,10 @@ abstract class StockRemoteDataSource {
 
 class StockRemoteDataSourceImpl implements StockRemoteDataSource {
   final Dio dio;
-  final String? apiKey = dotenv.env['FINNHUB_API_KEY'];
+  String get apiKey {
+    return dotenv.env['FINNHUB_API_KEY'] ?? '';
+  }
+
   static const int _searchResultLimit = 10;
   static const Duration _quoteCacheTtl = Duration(seconds: 45);
 
@@ -36,7 +39,7 @@ class StockRemoteDataSourceImpl implements StockRemoteDataSource {
   @override
   Future<List<StockModel>> getLiveStocks() async {
     final key = apiKey;
-    if (key == null || key.isEmpty) {
+    if (key.isEmpty) {
       throw ServerException('Missing FINNHUB_API_KEY in .env');
     }
 
@@ -50,7 +53,7 @@ class StockRemoteDataSourceImpl implements StockRemoteDataSource {
   @override
   Future<List<StockModel>> searchStocks(String query) async {
     final key = apiKey;
-    if (key == null || key.isEmpty) {
+    if (key.isEmpty) {
       throw ServerException('Missing FINNHUB_API_KEY in .env');
     }
 
@@ -72,7 +75,8 @@ class StockRemoteDataSourceImpl implements StockRemoteDataSource {
             'https://finnhub.io/api/v1/search?q=$encodedQuery&exchange=US&token=$key',
       );
 
-      final List<dynamic> result = (searchResponse.data['result'] as List?) ?? [];
+      final List<dynamic> result =
+          (searchResponse.data['result'] as List?) ?? [];
       final symbols = <String>{
         if (_looksLikeTicker(trimmedQuery)) trimmedQuery,
         ...result
@@ -82,9 +86,7 @@ class StockRemoteDataSourceImpl implements StockRemoteDataSource {
             .whereType<String>()
             .map(_cleanFinnhubSymbol)
             .where((symbol) => symbol.isNotEmpty),
-      }
-          .take(_searchResultLimit)
-          .toList();
+      }.take(_searchResultLimit).toList();
 
       if (symbols.isEmpty) {
         _searchCache[trimmedQuery] = const [];
@@ -104,8 +106,12 @@ class StockRemoteDataSourceImpl implements StockRemoteDataSource {
     String key,
   ) async {
     final futures = symbols.map((symbol) => _fetchStock(symbol, key));
-    final stocks = (await Future.wait(futures)).whereType<StockModel>().toList();
-    stocks.sort((a, b) => b.changePercent.abs().compareTo(a.changePercent.abs()));
+    final stocks = (await Future.wait(
+      futures,
+    )).whereType<StockModel>().toList();
+    stocks.sort(
+      (a, b) => b.changePercent.abs().compareTo(a.changePercent.abs()),
+    );
     return stocks;
   }
 
@@ -122,7 +128,8 @@ class StockRemoteDataSourceImpl implements StockRemoteDataSource {
       );
       final profileFuture = WebRequestHelper.getWithWebCorsFallback(
         dio: dio,
-        url: 'https://finnhub.io/api/v1/stock/profile2?symbol=$symbol&token=$key',
+        url:
+            'https://finnhub.io/api/v1/stock/profile2?symbol=$symbol&token=$key',
       );
 
       final responses = await Future.wait([quoteFuture, profileFuture]);

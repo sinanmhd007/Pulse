@@ -17,8 +17,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await dotenv.load(fileName: ".env");
-  print("KEY: ${dotenv.env['FINNHUB_API_KEY']}");
+  await dotenv.load(fileName: "assets/env/.env");
   await di.init();
   runApp(const PulseApp());
 }
