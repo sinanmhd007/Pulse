@@ -1,59 +1,88 @@
-# Pulse 
+# Pulse – Real-Time Financial Market App 
 
-Pulse is a premium Flutter application demonstrating the integration of real-time Data streams (News + Cryptocurrency) with a Robust Clean Architecture setup.
+Pulse is a cross-platform Flutter application that provides real-time cryptocurrency and currency exchange market data with a smooth, responsive, and modern UI experience.
 
-## Features 
-- **Firebase Authentication**: Email/Password and Google Sign-In.
-- **News Tracker**: Pulls live top headlines caching for offline functionality.
-- **Crypto Tracker**: Live tracking of top 100 cryptocurrencies by market cap using CoinGecko.
-- **Clean Architecture & BLoC**: Industry standard scalable structure.
-- **Beautiful UI**: Modern aesthetics featuring `flutter_spinkit` and responsive designs.
-- **Offline Support**: Gracefully handles network loss and enables local data caching.
+It is built using clean architecture principles with a strong focus on performance, offline support, and scalable code structure.
 
-## Screenshots 
-https://github.com/user-attachments/assets/f3b364b4-6512-411d-829b-8ac00fe6aeeb
+---
 
-## Tech Stack 
-- **Flutter** & **Dart**
-- **BLoC** (State Management)
-- **GetIt** (Dependency Injection)
-- **Firebase** (Auth)
-- **dartz** (Functional Error Handling)
-- **dio** & **internet_connection_checker**
-- **shared_preferences** (Local Storage)
-- **cached_network_image**
+##  Features
 
-## Architecture Diagram 
-```text
-lib/
- ┣ core/              # Shared utilities, errors, network info, theme, DI
- ┣ features/          # Application features
- ┃ ┣ auth/            # Authentication feature
- ┃ ┃ ┣ data/          # Data sources & repositories implementation
- ┃ ┃ ┣ domain/        # Entities, UseCases, Repositories interface
- ┃ ┃ ┗ presentation/  # UI, BLoC, Events, States
- ┃ ┣ news/            # News feature
- ┃ ┗ crypto/          # Crypto feature
- ┗ main.dart          # Entry point
-```
+-  Real-time cryptocurrency and currency exchange rate tracking  
+-  Fast local search with in-memory filtering  
+-  REST API integration for live market data  
+-  Offline caching using SharedPreferences  
+-  Automatic refresh on network reconnection  
+-  Robust error handling with fallback UI  
+-  Fully responsive UI for mobile and web  
+-  Clean Architecture with Repository Pattern  
+-  Efficient state management using BLoC  
+-  Firebase integration (Authentication + Hosting)  
+-  Reusable and modular widget design  
 
-## Getting Started 
-1. Clone the repository.
-   ```bash
-   git clone https://github.com/sinanmhd007/Pulse.git
-   ```
-2. Install dependencies.
-   ```bash
-   flutter pub get
-   ```
-3. Configure **Firebase**. Ensure `firebase_options.dart` is added via the FlutterFire CLI.
-   ```bash
-   flutterfire configure
-   ```
-4. Run the app.
-   ```bash
-   flutter run
-   ```
+---
+
+##  Tech Stack
+
+- Flutter (UI Framework)
+- Dart (Programming Language)
+- BLoC (State Management)
+- Dio (HTTP Client)
+- SharedPreferences (Local Storage)
+- REST API (Market Data)
+- Firebase Hosting (Deployment)
+
+---
+
+##  Architecture
+
+The project follows Clean Architecture:
+
+---
+
+##  API Used
+
+- Exchange Rate API (Currency Data)
+- CoinGecko API (Crypto Data - optional/extendable)
+
+---
+
+##  Key Highlights
+
+- Optimized for performance with minimal API calls
+- Fully offline-ready with cached data support
+- Smooth search experience using local filtering
+- Scalable structure for adding more financial features
+
+---
+
+
+##  Live Demo
+
+[https://pulse-c1811.web.app/]
+
+---
+
+##  Developer
+
+Built by **Sinan**
+
+Flutter Developer focused on scalable mobile & web applications.
+
+---
+
+##  Future Improvements
+
+- Watchlist feature
+- Push notifications for price alerts
+- Advanced charts (candlestick, trend analysis)
+- Portfolio tracking system
+
+---
+
+##  License
+
+This project is for portfolio and educational purposes.
 
 ## Development
 Pulse uses the `dev` branch for active feature development and `main` for stable releases.
