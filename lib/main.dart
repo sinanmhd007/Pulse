@@ -18,6 +18,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await dotenv.load(fileName: ".env");
+  print("KEY: ${dotenv.env['FINNHUB_API_KEY']}");
   await di.init();
   runApp(const PulseApp());
 }
