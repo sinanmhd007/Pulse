@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/network/web_request_helper.dart';
 import '../models/stock_model.dart';
@@ -11,10 +10,7 @@ abstract class StockRemoteDataSource {
 
 class StockRemoteDataSourceImpl implements StockRemoteDataSource {
   final Dio dio;
-  String get apiKey {
-    return dotenv.env['FINNHUB_API_KEY'] ?? '';
-  }
-
+  String get apiKey => 'd80j3mpr01qt5k5v5rcgd80j3mpr01qt5k5v5rd0';
   static const int _searchResultLimit = 10;
   static const Duration _quoteCacheTtl = Duration(seconds: 45);
 
